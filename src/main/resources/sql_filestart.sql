@@ -10,3 +10,4 @@ on spring_start.* to 'spring_start_user'@'localhost';
 
 select * from user;
 delete  from user where user_id=2;
+select * from post;

@@ -9,5 +9,5 @@ import java.util.Optional;
 // repozytorium interfejs implementujący zapytania SQL
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    Optional <User> findFirstByEmail(String email);
+    Optional<User> findFirstByEmail(String email);
 }
