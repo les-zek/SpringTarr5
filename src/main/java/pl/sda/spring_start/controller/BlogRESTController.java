@@ -14,6 +14,7 @@ import java.util.*;
 
 // klasa mapująca żądania prokołu http - adres lokalny http://localhost:8080
 //@Controller       //- mapuje żądanie i zwraca widok html
+@RequestMapping("/api")
 @RestController     //- mapuje żądania i dane REST - Representative State Transfer
 public class BlogRESTController {
     UserService userService;
@@ -132,5 +133,9 @@ public class BlogRESTController {
         List<Post> filteredList = new ArrayList<>();
         filteredList.addAll(postSet);
         return filteredList;
+    }
+    @GetMapping("/posts/stats")
+    public String getStats() {
+     return    postService.getPostStatistics();
     }
 }

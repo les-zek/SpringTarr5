@@ -11,3 +11,5 @@ on spring_start.* to 'spring_start_user'@'localhost';
 select * from user;
 delete  from user where user_id=2;
 select * from post;
+
+SELECT p.category, count(*) FROM Post p GROUP BY p.category ORDER BY 2 DESC;
