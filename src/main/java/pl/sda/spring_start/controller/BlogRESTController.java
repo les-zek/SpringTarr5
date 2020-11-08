@@ -10,18 +10,20 @@ import pl.sda.spring_start.service.PostService;
 import pl.sda.spring_start.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 // klasa mapująca żądania prokołu http - adres lokalny http://localhost:8080
 //@Controller       //- mapuje żądanie i zwraca widok html
-
-@RestController     //- mapuje żądania i dane REST - Reprentative State Transfer
+@RestController     //- mapuje żądania i dane REST - Representative State Transfer
 public class BlogRESTController {
-    @Autowired              // wstrzykiwanie zależności
     UserService userService;
-    @Autowired
     PostService postService;
+
+    @Autowired              // wstrzykiwanie zależności przez konstturktor
+    public BlogRESTController(UserService userService, PostService postService) {
+        this.userService = userService;
+        this.postService = postService;
+    }
 
     @PostMapping("/user/register")
     public void registerUser(
@@ -49,39 +51,36 @@ public class BlogRESTController {
 
         }
     }
-
     @GetMapping("/users")
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(){
         return userService.getAllUsersOrderByRegistrationDateTimeDesc();
     }
-
     @GetMapping("/user/email={email}")
     public User getUserById(
             @RequestParam("email") String email
-    ) {
+    ){
         return userService.getUserByEmail(email).orElse(new User());
     }
-
     @PostMapping("/post/addPost")
     public void addPost(
             @RequestParam("title") String title,
             @RequestParam("content") String content,
             @RequestParam("category") Category category,
             @RequestParam("userId") int userId
-    ) {
+    ){
         Optional<User> userOptional = userService.getUserById(userId);
-
-        if (userOptional.isPresent()) {
-            if (userOptional.get().isStatus()) {
+        if(userOptional.isPresent()){
+            if(userOptional.get().isStatus()){
                 postService.addPost(title, content, category, userOptional.get());
             }
         }
     }
-
     @GetMapping("/posts")
-    public List<Post> getAllPosts() {
+    public List<Post> getAllPosts(){
         return postService.getAllPosts();
     }
+
+
 
     // GET      - SELECT - pobiera zawartość z bazy i zwraca obiekt lub listę obiektów
     // POST     - INSERT - wprowadza dane do bazy i nic nie zwraca
@@ -107,11 +106,31 @@ public class BlogRESTController {
     ) {
         return String.format("login : %s \npassword : %s", login, password);
     }
-@GetMapping("/posts/byCategory")
-    public List<Post> getPostsByCategory(
-        @RequestParam("category") Category category
-){
-        return postService.getPostByCategory(category);
-}
 
+    @GetMapping("/posts/byCategory")
+    public List<Post> getPostsByCategory(
+            @RequestParam("category") Category category
+    ){
+        return postService.getPostsByCategory(category);
+    }
+    @GetMapping("/posts/ByCategoryAndAuthor")
+    public List<Post> getPostsByCategoryAndAuthor(
+            @RequestParam("category") Category category,
+            @RequestParam("userId") int userId
+    ){
+        if(userService.getUserById(userId).isPresent()) {
+            return postService.getPostsByCategoryAndAuthor(category, userService.getUserById(userId).get());
+        }
+        return new ArrayList<>();
+    }
+    @GetMapping("/posts/keyWordsSearch")
+    public List<Post> getPostsByTitleLikeOrContentLike(String keyWords){
+        Set<Post> postSet = new HashSet<>();
+        for (String keyWord : keyWords.split(",")) {
+            postSet.addAll(postService.getPostsByTitleLikeOrContentLike(keyWord));
+        }
+        List<Post> filteredList = new ArrayList<>();
+        filteredList.addAll(postSet);
+        return filteredList;
+    }
 }

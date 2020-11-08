@@ -13,19 +13,20 @@ import java.util.Map;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    // filtrowanie po kategorii i sortowanie po dacie
+    // Filtrowanie po kategorii
     List<Post> findAllByCategory(Category category, Sort sort);
 
-    // szukanie po autorze i kategorii
+    // Szukanie postów po autorze i kategorii
     List<Post> findAllByCategoryAndAuthor(Category category, User author, Sort sort);
 
-    // szukanie słów kluczowych w tytule i zawartości
-    List<Post> findAllByTitleInOrContentIn(List<String> titleWords, List<String> content);
+    // Szukanie słów kluczowych w tytule i zawartości posta
+    List<Post> findAllByTitleLikeOrContentLike(String titlePattern, String contentPattern);
 
-    // grupowanie po kategorii - statystyka
+    // Statystyki postów - grupowanie postów po kategorii
     @Query(
-            value = "SELECT p.category, count(*) from Post p group by p.category order by 2 DESC",
+            value = "SELECT p.category, count(*) FROM Post p GROUP BY p.category ORDER BY 2 DESC",
             nativeQuery = true
     )
     Map<Object, Object> postStatistics();
+
 }
