@@ -15,6 +15,7 @@ import java.util.Optional;
 
 // klasa mapująca żądania prokołu http - adres lokalny http://localhost:8080
 //@Controller       //- mapuje żądanie i zwraca widok html
+
 @RestController     //- mapuje żądania i dane REST - Reprentative State Transfer
 public class BlogRESTController {
     @Autowired              // wstrzykiwanie zależności
@@ -106,6 +107,11 @@ public class BlogRESTController {
     ) {
         return String.format("login : %s \npassword : %s", login, password);
     }
-
+@GetMapping("/posts/byCategory")
+    public List<Post> getPostsByCategory(
+        @RequestParam("category") Category category
+){
+        return postService.getPostByCategory(category);
+}
 
 }
