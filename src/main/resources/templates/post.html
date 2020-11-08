@@ -9,13 +9,16 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
+<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto" th:if="${post != null}">
             <h1 th:text="${post.getTitle()}"></h1>
+            <h2 th:text="${'Category: '+ post.getCategory().getCategoryName()}"></h2>
+            <p th:text="${post.getContent()}"></p>
+
         </div>
         <div class="col-lg-8 col-md-10 mx-auto" th:if="${post == null}">
             <h1 th:text="'Bad request'"></h1>

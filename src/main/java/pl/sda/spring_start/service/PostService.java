@@ -42,10 +42,11 @@ public class PostService {
         for (Object[] row : postRepository.postStatistics()) {
             output += "\"" + Category.values()[(int) row[0]].getCategoryName() + " : " + row[1] + "\n";
         }
-        output +="}";
+        output += "}";
         return output;
     }
-    public Optional <Post> getPostById(int postId) {
+
+    public Optional<Post> getPostById(int postId) {
         return postRepository.findById(postId);
     }
 }
