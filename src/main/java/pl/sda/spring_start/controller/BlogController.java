@@ -3,13 +3,18 @@ package pl.sda.spring_start.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import pl.sda.spring_start.model.Category;
 import pl.sda.spring_start.model.Post;
+import pl.sda.spring_start.model.PostDto;
 import pl.sda.spring_start.service.PostService;
 import pl.sda.spring_start.service.UserService;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -42,8 +47,23 @@ public class BlogController {
 
     @GetMapping("/addPost")
     public String addPost(Model model) {
-        model.addAttribute("post", new Post());
+        model.addAttribute("postDto", new PostDto());
         model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
         return "addPost";
+    }
+
+    @PostMapping("/addPost")
+    public String addPost(
+            @Valid
+            @ModelAttribute PostDto postDto,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getFieldErrors().stream().forEach(fieldError -> System.out.println(fieldError.toString()));
+            return "addPost";
+        }
+        postService.addPost(postDto.getTitle(), postDto.getContent(), postDto.getCategory(),
+                userService.getUserById(4).get());
+        return "redirect:/";
     }
 }

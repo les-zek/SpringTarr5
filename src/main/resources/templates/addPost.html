@@ -16,13 +16,15 @@
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
             <h1>Add post form</h1>
-            <form th:action="@{/addPost}" th:method="POST" th:object="${post}">
+            <form th:action="@{/addPost}" th:method="POST" th:object="${postDto}">
                 <div class="form-group">
+                    <p th:errors="*{title}">title error</p>
                     <input class="form-control" th:type="text" th:field="*{title}" placeholder="insert title here"><br>
                     <select class="form-control" th:field="*{category}">
                         <option th:each="cat : ${categories}" th:value="${cat}"
                                 th:text="${cat.getCategoryName()}"></option>
                     </select><br>
+                    <p th:errors="*{content}"> content error</p>
                     <textarea class="form-control" th:field="*{content}"
                               placeholder="insert content here"></textarea><br>
                     <input class="btn btn-success btn-rounded" th:type="submit" th:value="'add post'">
