@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th=”http://www.thymeleaf.org”>
+
+<!--znajduje się w fragments/head.html -> znacznik head-->
+<head th:replace="fragments/head.html :: head"></head>
+
+<body>
+<!--navigation-->
+<nav th:replace="fragments/navigation.html :: nav"></nav>
+
+<!-- Page Header -->
+<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <h1>Login</h1>
+            <div th:if="${loginError != null}" th:text="'Bad credentials'" style="font-size:12px" class="alert alert-danger" role="alert"> email error </div>
+            <form th:action="@{/login_process}" th:method="POST">
+                <div class="form-group">
+                    <input class="form-control" th:type="email" th:name="email" placeholder="insert e-mail here"><br>
+                    <input class="form-control" th:type="password" th:name="password" placeholder="insert password here"><br>
+                    <input class="btn btn-success btn-rounded" th:type="submit" th:value="'login'">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer.html :: footer"></footer>
+
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
