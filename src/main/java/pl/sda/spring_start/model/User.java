@@ -23,7 +23,7 @@ public class User {
     private String password;
     private LocalDateTime registrationDateTime;
     private boolean status;
-    @ManyToMany(fetch = FetchType.EAGER,  cascade = CascadeType.ALL )
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // relacja n:m
     private Set<Role> roles = new HashSet<>();
 
     public User(String email, String password, LocalDateTime registrationDateTime, boolean status) {

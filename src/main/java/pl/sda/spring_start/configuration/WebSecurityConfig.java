@@ -1,9 +1,13 @@
 package pl.sda.spring_start.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+import javax.sql.DataSource;
 
 @EnableWebSecurity      // aktywacja metod zabezpieczeń z klasy WebSecurityConfigurerAdapter
 @Configuration          // konfiguracja zabezpieczeń aplikacji
@@ -27,6 +31,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()                           // wylogowanie
                 .logoutUrl("/logout")               // adres do wylogowania
                 .logoutSuccessUrl("/");             // przekierowanie po wylogowaniu
+    }
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private EncoderAlgorithm encoderAlgorithm;
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication()
+                .usersByUsernameQuery("SELECT u.email, u.password, u.status FROM user u WHERE u.email = ?")
+                .authoritiesByUsernameQuery("SELECT u.email, r.role_name FROM user u JOIN user_roles ur ON " +
+                        "(u.user_id = ur.user_user_id) JOIN role r ON (r.role_id = ur.roles_role_id) " +
+                        "WHERE u.email = ?")
+                .dataSource(dataSource)                                 // obiekt przechowujący wynikowy result set
+                .passwordEncoder(encoderAlgorithm.getPasswordEncoder());// obiekt do szyfrowania hasła
     }
 
 }
