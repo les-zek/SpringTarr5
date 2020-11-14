@@ -8,13 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.sda.spring_start.model.Category;
-import pl.sda.spring_start.model.Post;
-import pl.sda.spring_start.model.PostDto;
+import pl.sda.spring_start.model.*;
 import pl.sda.spring_start.service.PostService;
 import pl.sda.spring_start.service.UserService;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -66,6 +65,31 @@ public class BlogController {
         }
         postService.addPost(postDto.getTitle(), postDto.getContent(), postDto.getCategory(),
                 userService.getUserById(4).get());
+        return "redirect:/";
+    }
+
+    @GetMapping("/register")
+    public String addUser(Model model) {
+        model.addAttribute("userDto", new UserDto());
+        return "addUser";
+    }
+
+    @PostMapping("/register")
+    public String addUser(
+            @Valid @ModelAttribute UserDto userDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "addUser";
+
+        }
+        if (userService.getUserByEmail(userDto.getEmail()).isPresent()) {
+            model.addAttribute("emailError", "email address is not unique");
+            return "addUser";
+        }
+        userService.registerUser(new User(userDto.getEmail(), userDto.getPassword(),
+                LocalDateTime.now(), true));
         return "redirect:/";
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th=”http://www.thymeleaf.org”>
+
+<!--znajduje się w fragments/head.html -> znacznik head-->
+<head th:replace="fragments/head.html :: head"></head>
+
+<body>
+<!--navigation-->
+<nav th:replace="fragments/navigation.html :: nav"></nav>
+
+<!-- Page Header -->
+<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='Add a user')"></header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <h1>Registration</h1>
+            <form th:action="@{/register}" th:method="POST" th:object="${userDto}">
+                <div class="form-group">
+                    <div th:if="${emailError != null}" th:text="${emailError}" style="font-size:10px" class="alert alert-danger" role="alert"> email error </div>
+                    <div th:errors="*{email}" style="font-size:10px" class="alert alert-danger" role="alert"> email error </div>
+                    <input class="form-control" th:type="email" th:field="*{email}" placeholder="insert e-mail here"><br>
+                    <div th:errors="*{password}" style="font-size:10px" class="alert alert-danger" role="alert"> password error </div>
+                    <input class="form-control" th:type="password" th:field="*{password}" placeholder="insert password here"><br>
+                    <input class="btn btn-success btn-rounded" th:type="submit" th:value="'register'">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer th:replace="fragments/footer.html :: footer"></footer>
+
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

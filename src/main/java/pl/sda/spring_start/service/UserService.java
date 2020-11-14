@@ -3,6 +3,7 @@ package pl.sda.spring_start.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.sda.spring_start.configuration.EncoderAlgorithm;
 import pl.sda.spring_start.model.User;
 import pl.sda.spring_start.repository.UserRepository;
 
@@ -13,8 +14,12 @@ import java.util.Optional;
 public class UserService {
     @Autowired      // wstrzykiwanie zależności
     UserRepository userRepository;
+    @Autowired
+    EncoderAlgorithm encoderAlgorithm;
 
     public void registerUser(User user) {
+
+        user.setPassword(encoderAlgorithm.getPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);          // INSERT INTO user values (?,?,?,?)
     }
 

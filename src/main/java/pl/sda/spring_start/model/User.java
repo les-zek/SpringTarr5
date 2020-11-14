@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity         // determinuje mapowanie klasy na tabelkę DB
@@ -19,6 +16,7 @@ public class User {
     @Id                                                     // primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)     // auto inkrementacja
     private int userId;             // auto inkrementowany klucz głównym tabeli
+    @Column(unique = true)
     private String email;
     private String password;
     private LocalDateTime registrationDateTime;
