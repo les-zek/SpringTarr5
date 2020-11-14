@@ -56,10 +56,12 @@ public class BlogController {
     public String addPost(
             @Valid
             @ModelAttribute PostDto postDto,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            Model model
     ) {
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().stream().forEach(fieldError -> System.out.println(fieldError.toString()));
+            model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
             return "addPost";
         }
         postService.addPost(postDto.getTitle(), postDto.getContent(), postDto.getCategory(),
