@@ -41,7 +41,7 @@ public class BlogController {
         model.addAttribute("posts", postService.getAllPosts(0));    // pierwsze 5 postów
         model.addAttribute("auth", userService.getCredentials(auth));
         model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));
-   model.addAttribute("pageIndex",0);
+        model.addAttribute("pageIndex", 1);
         return "index";     // zwracającą nazwę dokumentu html który ma być wyświetlany
     }
     @GetMapping("/page={pageIndex}")
@@ -53,8 +53,7 @@ public class BlogController {
         model.addAttribute("posts", postService.getAllPosts(pageIndex - 1));
         model.addAttribute("auth", userService.getCredentials(auth));
         model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));
-        model.addAttribute("pageIndex",pageIndex);
-
+        model.addAttribute("pageIndex", pageIndex);
         return "index";
     }
 

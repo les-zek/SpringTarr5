@@ -9,14 +9,15 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
+<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
             <div th:if="${errorMessage != null}" th:text="${errorMessage}"
-                 style="font-size:14px" class="alert alert-danger" role="alert"> error </div>
+                 style="font-size:14px" class="alert alert-danger" role="alert"> error
+            </div>
 
             <div class="post-preview" th:each="post : ${posts}">
                 <a th:href="@{'/posts&' + ${post.getPostId()}}">
@@ -50,7 +51,7 @@
                    type="button"
                    class="btn btn-outline-warning waves-effect px-3"></a>
             </div>
-
+        </div>
     </div>
 </div>
 

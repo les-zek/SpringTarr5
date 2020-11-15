@@ -27,4 +27,6 @@ FROM
 	role r ON (r.role_id = ur.roles_role_id)
 WHERE
 	u.email = ?;
-    
+
+update user set status=2 where user_id=8;
+select * from user_roles;
