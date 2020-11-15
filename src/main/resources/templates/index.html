@@ -9,7 +9,7 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
+<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
@@ -17,6 +17,7 @@
         <div class="col-lg-8 col-md-10 mx-auto">
             <div th:if="${errorMessage != null}" th:text="${errorMessage}"
                  style="font-size:14px" class="alert alert-danger" role="alert"> error </div>
+
             <div class="post-preview" th:each="post : ${posts}">
                 <a th:href="@{'/posts&' + ${post.getPostId()}}">
                     <h2 class="post-title" th:text="${post.getTitle().toUpperCase()}"> post title </h2>
@@ -26,10 +27,10 @@
           ' Date: ' + ${#temporals.format(post.getDateAdded(), 'dd-MM-yyyy HH:mm')}"> author category dateAdded </p>
                 <div class="clearfix" th:if="${auth != null}">
                     <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
-              auth.getUsername().equals(post.getAuthor().getEmail())}"
+                        auth.getUsername().equals(post.getAuthor().getEmail())}"
                        class="fa fa-trash" aria-hidden="true" th:href="@{'/deletePost&'+${post.getPostId()}}">delete</a>
                     <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
-              auth.getUsername().equals(post.getAuthor().getEmail())}"
+                        auth.getUsername().equals(post.getAuthor().getEmail())}"
                        class="fas fa-edit" aria-hidden="true" th:href="@{'/editPost&'+${post.getPostId()}}">edit</a>
                 </div>
                 <hr>
