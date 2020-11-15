@@ -9,7 +9,7 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
+<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
@@ -20,13 +20,23 @@
                     <h2 class="post-title" th:text="${post.getTitle().toUpperCase()}"> post title </h2>
                 </a>
                 <p class="post-meta" th:text="'Author: ' + ${post.getAuthor().getEmail()} +
-          ' Category: ' + ${post.getCategory()} +
+          ' Category: ' + ${post.getCategory().getCategoryName().toUpperCase()} +
           ' Date: ' + ${#temporals.format(post.getDateAdded(), 'dd-MM-yyyy HH:mm')}"> author category dateAdded </p>
+                <div class="clearfix" th:if="${auth != null}">
+                    <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
+              auth.getUsername().equals(post.getAuthor().getEmail())}"
+                       class="fa fa-trash" aria-hidden="true" th:href="@{'/deletePost&'+${post.getPostId()}}">delete</a>
+                    <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
+              auth.getUsername().equals(post.getAuthor().getEmail())}"
+                       class="fas fa-edit" aria-hidden="true" th:href="@{'/editPost&'+${post.getPostId()}}">edit</a>
+                </div>
                 <hr>
             </div>
             <!-- Pager -->
             <div class="clearfix">
-                <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+                <!--<a class="fas fa-plus" href="#"> older posts</a>-->
+                <a type="button" class="btn btn-outline-warning waves-effect px-3">
+                    <i class="fas fa-rocket" aria-hidden="true"></i> older posts</a>
             </div>
         </div>
     </div>
