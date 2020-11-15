@@ -1,5 +1,6 @@
 package pl.sda.spring_start.controller;
 
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,13 +33,12 @@ public class BlogController {
     @GetMapping("/")        // na adresie localhost:8080/
     public String home(
             Model model,
-            Authentication auth     // można wydobyć dane logowania gdy nie jest null
+            Authentication auth    // można wydobyć dane logowania gdy nie jest null
     ) {   // wywołaj metodę home()
         // dodaje atrybut do obiektu model, który może być przekazany do widoku
         // model.addAttribute(nazwaAtrybutu, wartość);
         model.addAttribute("posts", postService.getAllPosts());
         model.addAttribute("auth", userService.getCredentials(auth));
-
         return "index";     // zwracającą nazwę dokumentu html który ma być wyświetlany
     }
 
@@ -124,38 +124,50 @@ public class BlogController {
     }
 
     @GetMapping("/deletePost&{postId}")
-    public String deletePost(@PathVariable("postId") int postId) {
-        postService.deletePostById(postId);
-        return "redirect:/";
+    public String deletePost(@PathVariable("postId") int postId, Model model, Authentication auth) {
+        if (postService.getPostById(postId).isPresent()) {
+            postService.deletePostById(postId);
+            return "redirect:/";
+        }
+        model.addAttribute("errorMessage", "Delete action aborted! There is not post with id = " + postId);
+        model.addAttribute("posts", postService.getAllPosts());
+        model.addAttribute("auth", userService.getCredentials(auth));
+        return "index";
+
     }
 
     @GetMapping("/editPost&{postId}")
     public String updatePost(
-            @PathVariable("postId") int postId, Model model, Authentication auth) {
+            @PathVariable("postId") Integer postId, Model model, Authentication auth) {
         if (postService.getPostById(postId).isPresent()) {
             Post postToUpdate = postService.getPostById(postId).get();
             PostDto postDto = new PostDto(
                     postToUpdate.getTitle(), postToUpdate.getContent(), postToUpdate.getCategory());
             model.addAttribute("postDto", postDto);
+            model.addAttribute("postId", postId);
             model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
             model.addAttribute("auth", userService.getCredentials(auth));
             return "addPost";
         }
-        return "redirect:/";        // gdy nie ma posta o określonym id przekierowujemy na stronę domową
+        model.addAttribute("errorMessage", "Update action aborted! There is not post with id = " + postId);
+        model.addAttribute("posts", postService.getAllPosts());
+        model.addAttribute("auth", userService.getCredentials(auth));
+        return "index";     // gdy nie ma posta o określonym id przekierowujemy na stronę domową
     }
 
     @PostMapping("/editPost&{postId}")
     public String updatePost(
             @PathVariable("postId") int postId,
-            @Valid @ModelAttribute PostDto postDto,
-            BindingResult bindingResult) {
-        if (postService.getPostById(postId).isPresent()) {
-            Post post = postService.getPostById(postId).get();
-            post.setTitle(postDto.getTitle());
-            post.setContent(postDto.getContent());
-            post.setCategory(postDto.getCategory());
+            @Valid @ModelAttribute("postDto") PostDto postDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", new ArrayList<>(Arrays.asList(Category.values())));
+            return "addPost";
+        }
+        if (postService.editPost(postId, postDto)) {
             return "redirect:/posts&" + postId;
-
         }
         return "redirect:/";
     }

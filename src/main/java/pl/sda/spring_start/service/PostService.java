@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.sda.spring_start.model.Category;
 import pl.sda.spring_start.model.Post;
+import pl.sda.spring_start.model.PostDto;
 import pl.sda.spring_start.model.User;
 import pl.sda.spring_start.repository.PostRepository;
 
@@ -17,6 +18,18 @@ public class PostService {
     @Autowired
     PostRepository postRepository;
 
+    public boolean editPost(int postId, PostDto postDto) {
+        if (getPostById(postId).isPresent()) {
+            Post post = getPostById(postId).get();
+            post.setTitle(postDto.getTitle());
+            post.setContent(postDto.getContent());
+            post.setCategory(postDto.getCategory());
+            // do rozważenia co z autorem posta ???
+            postRepository.save(post);      // update
+            return true;
+        }
+        return false;
+    }
     public void deletePostById(int postId){
         postRepository.deleteById(postId);
     }

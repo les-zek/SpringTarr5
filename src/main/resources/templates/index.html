@@ -15,6 +15,8 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+            <div th:if="${errorMessage != null}" th:text="${errorMessage}"
+                 style="font-size:14px" class="alert alert-danger" role="alert"> error </div>
             <div class="post-preview" th:each="post : ${posts}">
                 <a th:href="@{'/posts&' + ${post.getPostId()}}">
                     <h2 class="post-title" th:text="${post.getTitle().toUpperCase()}"> post title </h2>
