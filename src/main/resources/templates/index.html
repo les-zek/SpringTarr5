@@ -9,7 +9,7 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
+<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
@@ -37,11 +37,20 @@
             </div>
             <!-- Pager -->
             <div class="clearfix">
-                <!--<a class="fas fa-plus" href="#"> older posts</a>-->
-                <a type="button" class="btn btn-outline-warning waves-effect px-3">
-                    <i class="fas fa-rocket" aria-hidden="true"></i> older posts</a>
+                <a th:each="index : ${pagesIndexes}"
+                   th:if="${pageIndex == index}"
+                   th:text="${index}"
+                   th:href="@{'/page='+${index}}"
+                   type="button"
+                   class="btn btn-outline-secondary waves-effect px-3"></a>
+                <a th:each="index : ${pagesIndexes}"
+                   th:if="${pageIndex != index}"
+                   th:text="${index}"
+                   th:href="@{'/page='+${index}}"
+                   type="button"
+                   class="btn btn-outline-warning waves-effect px-3"></a>
             </div>
-        </div>
+
     </div>
 </div>
 

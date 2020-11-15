@@ -1,6 +1,9 @@
 package pl.sda.spring_start.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.sda.spring_start.model.Category;
@@ -10,6 +13,7 @@ import pl.sda.spring_start.model.User;
 import pl.sda.spring_start.repository.PostRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,35 +34,57 @@ public class PostService {
         }
         return false;
     }
-    public void deletePostById(int postId){
+
+    public void deletePostById(int postId) {
         postRepository.deleteById(postId);
     }
-    public void addPost(String title, String content, Category category, User author){
-        postRepository.save(new Post(title,content, LocalDateTime.now(), category, author));
+
+    public void addPost(String title, String content, Category category, User author) {
+        postRepository.save(new Post(title, content, LocalDateTime.now(), category, author));
     }
-    public List<Post> getAllPosts(){
+
+    public List<Post> getAllPosts() {
         return postRepository.findAll(Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
-    public List<Post> getPostsByCategory(Category category){
+    public List<Integer> generatePagesIndexes(List<Post> posts){
+        int noOfPages = (getAllPosts().size() / 5) + 1;
+        List<Integer> pagesIndexes = new ArrayList<>();
+        for (int i = 0; i < noOfPages; i++){
+            pagesIndexes.add(i + 1);
+        }
+        return pagesIndexes;
+    }
+
+    public List<Post> getAllPosts(int pageIndex) {
+        Pageable pageable = PageRequest.of(pageIndex, 5, Sort.by(Sort.Direction.DESC, "dateAdded"));
+        Page<Post> postPage = postRepository.findAll(pageable);
+        return postPage.getContent();
+    }
+
+    public List<Post> getPostsByCategory(Category category) {
         return postRepository.findAllByCategory(category, Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
-    public List<Post> getPostsByCategoryAndAuthor(Category category, User author){
-        return postRepository.findAllByCategoryAndAuthor(category,author,Sort.by(Sort.Direction.DESC, "dateAdded"));
+
+    public List<Post> getPostsByCategoryAndAuthor(Category category, User author) {
+        return postRepository.findAllByCategoryAndAuthor(category, author, Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
-    public List<Post> getPostsByTitleLikeOrContentLike(String keyWord){
-        return postRepository.findAllByTitleLikeOrContentLike("%"+keyWord+"%", "%"+keyWord+"%");
+
+    public List<Post> getPostsByTitleLikeOrContentLike(String keyWord) {
+        return postRepository.findAllByTitleLikeOrContentLike("%" + keyWord + "%", "%" + keyWord + "%");
     }
-    public String getPostsStats(){
+
+    public String getPostsStats() {
         String output = "{\n";
         // IT : 3
         // DS : 1
-        for(Object[] row : postRepository.postStatistics()){
+        for (Object[] row : postRepository.postStatistics()) {
             output += "\"" + Category.values()[(int) row[0]].getCategoryName() + "\" : " + row[1] + "\n";
         }
         output += "}";
         return output;
     }
-    public Optional<Post> getPostById(int postId){
+
+    public Optional<Post> getPostById(int postId) {
         return postRepository.findById(postId);
     }
 }

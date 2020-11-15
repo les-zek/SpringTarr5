@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,9 +38,24 @@ public class BlogController {
     ) {   // wywołaj metodę home()
         // dodaje atrybut do obiektu model, który może być przekazany do widoku
         // model.addAttribute(nazwaAtrybutu, wartość);
-        model.addAttribute("posts", postService.getAllPosts());
+        model.addAttribute("posts", postService.getAllPosts(0));    // pierwsze 5 postów
         model.addAttribute("auth", userService.getCredentials(auth));
+        model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));
+   model.addAttribute("pageIndex",0);
         return "index";     // zwracającą nazwę dokumentu html który ma być wyświetlany
+    }
+    @GetMapping("/page={pageIndex}")
+    public String home(
+            @PathVariable("pageIndex") int pageIndex,
+            Model model,
+            Authentication auth
+    ){
+        model.addAttribute("posts", postService.getAllPosts(pageIndex - 1));
+        model.addAttribute("auth", userService.getCredentials(auth));
+        model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));
+        model.addAttribute("pageIndex",pageIndex);
+
+        return "index";
     }
 
     @GetMapping("/posts&{postId}")
