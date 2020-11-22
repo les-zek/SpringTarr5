@@ -28,5 +28,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             nativeQuery = true
     )
     List<Object[]> postStatistics();
+    @Query(
+            value = "SELECT p.* FROM post p ORDER BY (SELECT count(*) FROM likes l WHERE l.post_id = p.post_id) - (SELECT count(*) FROM dislikes d WHERE d.post_id = p.post_id)",
+            nativeQuery = true
+    )
+    List<Object[]> findAllSortedByResultASC();
 
 }

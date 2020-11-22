@@ -2,6 +2,7 @@ package pl.sda.spring_start.controller;
 
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -56,19 +57,27 @@ public class BlogController {
     ) {   // wywołaj metodę home()
         // dodaje atrybut do obiektu model, który może być przekazany do widoku
         // model.addAttribute(nazwaAtrybutu, wartość);
-        model.addAttribute("posts", postService.getAllPosts(0));    // pierwsze 5 postów
+        model.addAttribute("posts", postService.getAllPosts(0, Sort.Direction.DESC, "dateAdded"));    // pierwsze 5 postów
         model.addAttribute("auth", userService.getCredentials(auth));
         model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));
         model.addAttribute("pageIndex", 1);
         return "index";     // zwracającą nazwę dokumentu html który ma być wyświetlany
     }
-    @GetMapping("/page={pageIndex}")
+    @GetMapping("/page={pageIndex}&{field}&{sortDirection}")
     public String home(
             @PathVariable("pageIndex") int pageIndex,
+            @PathVariable("field") String field,
+            @PathVariable("sortDirection") String sortDirection,
             Model model,
             Authentication auth
     ){
-        model.addAttribute("posts", postService.getAllPosts(pageIndex - 1));
+        // w sytuacji sortowani po like-ach i dislike-ach
+
+        model.addAttribute("posts",
+                postService.getAllPosts(pageIndex - 1,
+                        sortDirection.equals("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC,
+                        field
+                ));
         model.addAttribute("auth", userService.getCredentials(auth));
         model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));
         model.addAttribute("pageIndex", pageIndex);

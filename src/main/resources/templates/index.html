@@ -15,6 +15,16 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+            <!--sortowanie -->
+            <h3>Sorting</h3>
+            <div class="clearfix">
+                <a th:text="'DATE DESC'" th:href="@{'/page='+${pageIndex}+'&dateAdded&DESC'}" type="button" class="btn btn-outline-secondary waves-effect px-3"></a>
+                <a th:text="'DATE ASC'" th:href="@{'/page='+${pageIndex}+'&dateAdded&ASC'}" type="button" class="btn btn-outline-secondary waves-effect px-3"></a>
+                <a th:text="'GRADES DESC'" th:href="@{'/page='+${pageIndex}+'&likes&DESC'}" type="button" class="btn btn-outline-secondary waves-effect px-3"></a>
+                <a th:text="'GRADES ASC'" th:href="@{'/page='+${pageIndex}+'&likes&ASC'}" type="button" class="btn btn-outline-secondary waves-effect px-3"></a>
+            </div>
+            <h3>Posts</h3>
+            <!--sortowanie -->
             <div th:if="${errorMessage != null}" th:text="${errorMessage}"
                  style="font-size:14px" class="alert alert-danger" role="alert"> error
             </div>
@@ -43,6 +53,7 @@
                     <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
                         auth.getUsername().equals(post.getAuthor().getEmail())}"
                        class="fas fa-edit" aria-hidden="true" th:href="@{'/editPost&'+${post.getPostId()}}">edit</a>
+                    <a th:text="${'RESULT ' + (post.getLikes().size() - post.getDislikes().size())}"> GRADE </a>
                     <div th:each="follower : ${post.getLikes()}">
                         <a th:if="${follower.getEmail().equals(auth.getUsername())}"  th:text="'LIKED!'"></a>
                     </div>
