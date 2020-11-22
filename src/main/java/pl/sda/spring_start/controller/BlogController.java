@@ -31,6 +31,15 @@ public class BlogController {
         this.postService = postService;
     }
 
+    @GetMapping("/addLike&{postId}")
+    public String addLike(@PathVariable("postId") int postId, Authentication auth) {
+        String email = userService.getCredentials(auth).getUsername();
+        postService.addLike(postId, userService.getUserByEmail(email).get());
+        return "redirect:/";
+
+    }
+
+
     @GetMapping("/")        // na adresie localhost:8080/
     public String home(
             Model model,
@@ -44,12 +53,13 @@ public class BlogController {
         model.addAttribute("pageIndex", 1);
         return "index";     // zwracającą nazwę dokumentu html który ma być wyświetlany
     }
+
     @GetMapping("/page={pageIndex}")
     public String home(
             @PathVariable("pageIndex") int pageIndex,
             Model model,
             Authentication auth
-    ){
+    ) {
         model.addAttribute("posts", postService.getAllPosts(pageIndex - 1));
         model.addAttribute("auth", userService.getCredentials(auth));
         model.addAttribute("pagesIndexes", postService.generatePagesIndexes(postService.getAllPosts()));

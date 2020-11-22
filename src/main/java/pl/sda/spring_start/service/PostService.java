@@ -16,12 +16,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PostService {
     @Autowired
     PostRepository postRepository;
 
+    public boolean addLike(int postId, User follower) {
+        Optional <Post> postToLikeOptional = getPostById(postId);
+        if(postToLikeOptional.isPresent()) {
+            Post postToLike = postToLikeOptional.get();
+            Set<User> currentLikes = postToLike.getLikes();
+            boolean returnValue = currentLikes.add(follower);
+            postToLike.setLikes(currentLikes);
+            postRepository.save(postToLike);
+            return returnValue;
+        }
+        return false;
+    }
     public boolean editPost(int postId, PostDto postDto) {
         if (getPostById(postId).isPresent()) {
             Post post = getPostById(postId).get();
