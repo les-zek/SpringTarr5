@@ -27,13 +27,28 @@
           ' Category: ' + ${post.getCategory().getCategoryName().toUpperCase()} +
           ' Date: ' + ${#temporals.format(post.getDateAdded(), 'dd-MM-yyyy HH:mm')}"> author category dateAdded </p>
                 <div class="clearfix" th:if="${auth != null}">
-                    <a class="fas fa-thumbs-up" aria-hidden="true" th:href="@{'/addLike&'+${post.getPostId()}}" th:text="${post.getLikes().size()}"> likes </a>
+                    <a th:if="${!auth.getUsername().equals(post.getAuthor().getEmail())}"
+                       class="fa fa-thumbs-up"
+                       th:href="@{'/addLike&'+${pageIndex}+'&'+${post.getPostId()}}"
+                       th:text="${post.getLikes().size()}"> likes
+                    </a>
+                    <a th:if="${!auth.getUsername().equals(post.getAuthor().getEmail())}"
+                       class="fa fa-thumbs-down"
+                       th:href="@{'/addDislike&'+${pageIndex}+'&'+${post.getPostId()}}"
+                       th:text="${post.getDislikes().size()}"> dislikes
+                    </a>
                     <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
                         auth.getUsername().equals(post.getAuthor().getEmail())}"
                        class="fa fa-trash" aria-hidden="true" th:href="@{'/deletePost&'+${post.getPostId()}}">delete</a>
                     <a th:if="${auth.getAuthorities().toString().toUpperCase().contains('ADMIN') ||
                         auth.getUsername().equals(post.getAuthor().getEmail())}"
                        class="fas fa-edit" aria-hidden="true" th:href="@{'/editPost&'+${post.getPostId()}}">edit</a>
+                    <div th:each="follower : ${post.getLikes()}">
+                        <a th:if="${follower.getEmail().equals(auth.getUsername())}"  th:text="'LIKED!'"></a>
+                    </div>
+                    <div th:each="hater : ${post.getDislikes()}">
+                        <a th:if="${hater.getEmail().equals(auth.getUsername())}"  th:text="'HATED!'"></a>
+                    </div>
                 </div>
                 <hr>
             </div>

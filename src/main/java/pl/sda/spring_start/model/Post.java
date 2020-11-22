@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-// import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -21,22 +19,29 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postId;
     private String title;
-    @Type(type = "text")
+    @Type(type = "text")    // typ w DB longtext
     private String content;
     private LocalDateTime dateAdded;
     private Category category;
     @ManyToOne(
             fetch = FetchType.EAGER
     )
-
     private User author;
-    @ManyToMany(
-            fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name="likes",
-    joinColumns = @JoinColumn(name="post_id"),
-    inverseJoinColumns = @JoinColumn(name = "user_id")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> likes = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "dislikes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> dislikes = new HashSet<>();
+
     public Post(String title, String content, LocalDateTime dateAdded, Category category, User author) {
         this.title = title;
         this.content = content;

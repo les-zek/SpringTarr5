@@ -23,18 +23,39 @@ public class PostService {
     @Autowired
     PostRepository postRepository;
 
-    public boolean addLike(int postId, User follower) {
-        Optional <Post> postToLikeOptional = getPostById(postId);
-        if(postToLikeOptional.isPresent()) {
-            Post postToLike = postToLikeOptional.get();
-            Set<User> currentLikes = postToLike.getLikes();
-            boolean returnValue = currentLikes.add(follower);
-            postToLike.setLikes(currentLikes);
-            postRepository.save(postToLike);
+    public boolean addDislike(int postId, User hater){
+        Optional<Post> postToDislikeOptional = getPostById(postId);
+        if(postToDislikeOptional.isPresent()){                     // sprawdzam czy post istnieje
+            Post postToDislike = postToDislikeOptional.get();
+            // gdy jestem autorem lub już likeowałem tego posta to nie nie mogę hejtować
+            if(postToDislike.getAuthor().equals(hater) || postToDislike.getLikes().contains(hater)){
+                return false;
+            }
+            Set<User> currentDislikes = postToDislike.getDislikes();     // pobieram aktualne dislike-i
+            boolean returnValue = currentDislikes.add(hater);      // dodaje dislike-a
+            postToDislike.setDislikes(currentDislikes);                  // aktualizuję zbiór dislike-ów
+            postRepository.save(postToDislike);                    // UPDATE post SET ....
             return returnValue;
         }
         return false;
     }
+    public boolean addLike(int postId, User follower){
+        Optional<Post> postToLikeOptional = getPostById(postId);
+        if(postToLikeOptional.isPresent()){                     // sprawdzam czy post istnieje
+            Post postToLike = postToLikeOptional.get();
+            // gdy jestem autorem lub już hejtowałem tego posta to nie nie mogę like-ować
+            if(postToLike.getAuthor().equals(follower) || postToLike.getDislikes().contains(follower)){
+                return false;
+            }
+            Set<User> currentLikes = postToLike.getLikes();     // pobieram aktualne like-i
+            boolean returnValue = currentLikes.add(follower);   // dodaje like-a
+            postToLike.setLikes(currentLikes);                  // aktualizuję zbiór like-ów
+            postRepository.save(postToLike);                    // UPDATE post SET ....
+            return returnValue;
+        }
+        return false;
+    }
+
     public boolean editPost(int postId, PostDto postDto) {
         if (getPostById(postId).isPresent()) {
             Post post = getPostById(postId).get();
