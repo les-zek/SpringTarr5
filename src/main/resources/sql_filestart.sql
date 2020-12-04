@@ -30,3 +30,7 @@ WHERE
 
 update user set status=2 where user_id=8;
 select * from user_roles;
+select * from likes;
+select * from dislikes;
+select* from post;
+select * from post;
