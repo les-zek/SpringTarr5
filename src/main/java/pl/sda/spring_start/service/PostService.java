@@ -1,10 +1,7 @@
 package pl.sda.spring_start.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import pl.sda.spring_start.model.Category;
 import pl.sda.spring_start.model.Post;
@@ -125,4 +122,14 @@ public class PostService {
     public Optional<Post> getPostById(int postId) {
         return postRepository.findById(postId);
     }
+
+    public List<Post> getAllPostsOrderByResult(String sortDirection, int pageIndex){
+        Pageable pageable = PageRequest.of(pageIndex, 5);
+        if(sortDirection.equals("ASC")){
+            return postRepository.findAllSortedByResultASC();
+        } else {
+            return postRepository.findAllSortedByResultDESC();
+        }
+    }
+
 }

@@ -1,5 +1,7 @@
 package pl.sda.spring_start.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,6 +34,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             value = "SELECT p.* FROM post p ORDER BY (SELECT count(*) FROM likes l WHERE l.post_id = p.post_id) - (SELECT count(*) FROM dislikes d WHERE d.post_id = p.post_id)",
             nativeQuery = true
     )
-    List<Object[]> findAllSortedByResultASC();
+    List<Post> findAllSortedByResultASC();
+    @Query(
+            value = "SELECT p.* FROM post p ORDER BY ((SELECT count(*) FROM likes l WHERE l.post_id = p.post_id) - (SELECT count(*) FROM dislikes d WHERE d.post_id = p.post_id)) DESC",
+            nativeQuery = true
+    )
+    List<Post> findAllSortedByResultDESC();
 
 }

@@ -34,3 +34,13 @@ select * from likes;
 select * from dislikes;
 select* from post;
 select * from post;
+select * from role;
+select * from user;
+
+SELECT p.* FROM post p ORDER BY ((SELECT count(*) FROM likes l WHERE l.post_id = p.post_id) - (SELECT count(*) FROM dislikes d WHERE d.post_id = p.post_id)) DESC;
+SELECT p.* FROM post p ORDER BY (SELECT count(*) FROM likes l WHERE l.post_id = p.post_id) desc;
+SELECT p.* FROM post p ORDER BY (SELECT count(*) FROM likes l WHERE l.post_id = p.post_id);
+select post_id,count(*) from likes group by post_id order by 2 desc;
+select post_id,count(*) from dislikes group by post_id order by 2 desc;
+
+
