@@ -24,7 +24,9 @@ public class Comment {
     @ManyToOne
     private Post rootPost;
 
-    public Comment(String message) {
+      public Comment(String message, User commentAuthor, Post rootPost) {
         this.message = message;
+        this.commentAuthor = commentAuthor;
+        this.rootPost = rootPost;
     }
 }

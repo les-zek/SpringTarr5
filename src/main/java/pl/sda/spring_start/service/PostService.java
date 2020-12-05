@@ -21,13 +21,13 @@ public class PostService {
     private CommentRepository commentRepository;
 
     public void addCommentToPostByUser(CommentDto commentDto, Post post, User user){
-
+        commentRepository.save(new Comment(commentDto.getMessage(), user, post));
     }
     public List<Comment> getAllCommentsOrderByDateAddedDesc(){
-        return null;
+        return commentRepository.findAll(Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
-    public void deleteCommentById(int commentId){
-
+    public void deleteCommentById(int commentId){       // przekazywane z a href
+        commentRepository.deleteById(commentId);
     }
 
     public boolean addDislike(int postId, User hater){
