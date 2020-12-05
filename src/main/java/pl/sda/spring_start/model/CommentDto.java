@@ -8,9 +8,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class CommentDto {
-    @NotBlank(message="Content can not be empty")
-    @Size(min=10, max=5000, message = "Size must be in {min} and {max}")
+    @NotBlank(message = "Comment must be not empty")
+    @Size(min= 0, max = 100, message = "Comment must be no longer than {value}")
     private String message;
 }

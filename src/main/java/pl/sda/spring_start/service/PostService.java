@@ -23,8 +23,8 @@ public class PostService {
     public void addCommentToPostByUser(CommentDto commentDto, Post post, User user){
         commentRepository.save(new Comment(commentDto.getMessage(), user, post));
     }
-    public List<Comment> getAllCommentsOrderByDateAddedDesc(){
-        return commentRepository.findAll(Sort.by(Sort.Direction.DESC, "dateAdded"));
+    public List<Comment> getAllCommentsForPostOrderByDateAddedDesc(Post post){
+        return commentRepository.findAllByRootPost(post, Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
     public void deleteCommentById(int commentId){       // przekazywane z a href
         commentRepository.deleteById(commentId);

@@ -9,15 +9,39 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='Post details')"></header>
+<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto" th:if="${post != null}">
             <h1 th:text="${post.getTitle()}"></h1>
-            <h2 th:text="${'Category: '+ post.getCategory().getCategoryName()}"></h2>
+            <h3 th:text="${'Category: ' + post.getCategory().getCategoryName()}"></h3>
             <p th:text="${post.getContent()}"></p>
+
+            <h3>Comments</h3>
+            <p th:if="${comments.size() == 0}" th:text="'This post is not commented yet'"></p>
+
+            <div class="post-preview" th:each="comment : ${comments}">
+                <p class="post-title" th:text="${comment.getMessage()}"> message </p>
+                <p class="post-meta" th:text="${comment.getCommentAuthor().getEmail()}"> author </p>
+                <p class="post-meta" th:text="${comment.getDateAdded()}"> date </p>
+            </div>
+            <h3>Add new comment</h3>
+            <form th:action="@{'/comments/addComment&postId=' + ${post.getPostId()}}" th:method="POST" th:object="${commentDto}">
+                <div class="form-group">
+                    <div th:text="${messageError}"  style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
+                    <textarea
+                            class="form-control"
+                            id="content"
+                            rows="5"
+                            th:field="*{message}"
+                            placeholder="insert comment here">
+                    </textarea><br>
+                    <input class="btn btn-success btn-rounded" th:type="submit" th:value="'add comment'">
+                </div>
+            </form>
+
 
         </div>
         <div class="col-lg-8 col-md-10 mx-auto" th:if="${post == null}">

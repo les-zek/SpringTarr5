@@ -9,7 +9,7 @@
 <nav th:replace="fragments/navigation.html :: nav"></nav>
 
 <!-- Page Header -->
-<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='The worst blog in the World')"></header>
+<header th:replace="fragments/header.html :: header(title='Michael\'s Blog', subtitle='The best blog in the World')"></header>
 
 <!-- Main Content -->
 <div class="container">
@@ -24,7 +24,14 @@
                         <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.getCategoryName()}"></option>
                     </select><br>
                     <div th:errors="*{content}" style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
-                    <textarea class="form-control" th:field="*{content}" placeholder="insert content here"></textarea><br>
+                    <div th:errors="*{content}"  style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
+                    <textarea
+                            class="form-control"
+                            id="content"
+                            rows="5"
+                            th:field="*{content}"
+                            placeholder="insert content here">
+                    </textarea><br>
                     <input class="btn btn-success btn-rounded" th:type="submit" th:value="'add post'">
                 </div>
             </form>
@@ -38,14 +45,20 @@
                     <select class="form-control" th:field="*{category}">
                         <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.getCategoryName()}"></option>
                     </select><br>
-                    <div th:errors="*{content}" style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
-                    <textarea class="form-control" th:field="*{content}" placeholder="insert content here"></textarea><br>
+                    <div th:errors="*{content}"  style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
+                    <textarea
+                            class="form-control"
+                            rows="5"
+                            th:field="*{content}"
+                            placeholder="insert content here">
+                    </textarea><br>
                     <input class="btn btn-success btn-rounded" th:type="submit" th:value="'update post'">
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 
 <!-- Footer -->
 <footer th:replace="fragments/footer.html :: footer"></footer>
