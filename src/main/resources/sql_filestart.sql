@@ -43,4 +43,4 @@ SELECT p.* FROM post p ORDER BY (SELECT count(*) FROM likes l WHERE l.post_id = 
 select post_id,count(*) from likes group by post_id order by 2 desc;
 select post_id,count(*) from dislikes group by post_id order by 2 desc;
 
-
+select * from comment;

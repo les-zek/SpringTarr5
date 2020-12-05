@@ -3,10 +3,8 @@ package pl.sda.spring_start.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import pl.sda.spring_start.model.Category;
-import pl.sda.spring_start.model.Post;
-import pl.sda.spring_start.model.PostDto;
-import pl.sda.spring_start.model.User;
+import pl.sda.spring_start.model.*;
+import pl.sda.spring_start.repository.CommentRepository;
 import pl.sda.spring_start.repository.PostRepository;
 
 import java.time.LocalDateTime;
@@ -18,7 +16,19 @@ import java.util.Set;
 @Service
 public class PostService {
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+
+    public void addCommentToPostByUser(CommentDto commentDto, Post post, User user){
+
+    }
+    public List<Comment> getAllCommentsOrderByDateAddedDesc(){
+        return null;
+    }
+    public void deleteCommentById(int commentId){
+
+    }
 
     public boolean addDislike(int postId, User hater){
         Optional<Post> postToDislikeOptional = getPostById(postId);
