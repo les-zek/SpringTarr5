@@ -40,9 +40,10 @@
             </div>
             <h3>Add new comment</h3>
             <!--<p th:if="${messageError != null}"> error </p>-->
-            <form th:action="@{'/comments/addComment&postId=' + ${post.getPostId()}}" th:method="POST"
+            <form th:action="@{'/comments&addComment&postId=' + ${post.getPostId()}}" th:method="POST"
                   th:object="${commentDto}">
                 <div class="form-group">
+                    <div th:errors="*{message}" style="font-size:10px" class="alert alert-danger" role="alert"></div>
                   <textarea
                           class="form-control"
                           id="content"

@@ -16,14 +16,13 @@
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto" th:if="${postId == null}">
             <h1>Add post form</h1>
-            <form th:action="@{/addPost}" th:method="POST" th:object="${postDto}">
+            <form th:action="@{/addPost}" th:method="POST" th:object="${postDto}" enctype="multipart/form-data">
                 <div class="form-group">
                     <div th:errors="*{title}" style="font-size:10px" class="alert alert-danger" role="alert"> title error </div>
                     <input class="form-control" th:type="text" th:field="*{title}" placeholder="insert title here"><br>
                     <select class="form-control" th:field="*{category}">
                         <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.getCategoryName()}"></option>
                     </select><br>
-                    <div th:errors="*{content}" style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
                     <div th:errors="*{content}"  style="font-size:10px" class="alert alert-danger" role="alert"> content error </div>
                     <textarea
                             class="form-control"
@@ -32,6 +31,7 @@
                             th:field="*{content}"
                             placeholder="insert content here">
                     </textarea><br>
+                    <input type="file" th:field="*{imagePath}" name="file"><br>
                     <input class="btn btn-success btn-rounded" th:type="submit" th:value="'add post'">
                 </div>
             </form>

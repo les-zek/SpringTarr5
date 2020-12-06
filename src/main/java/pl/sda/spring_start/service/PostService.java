@@ -3,10 +3,17 @@ package pl.sda.spring_start.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import pl.sda.spring_start.model.*;
 import pl.sda.spring_start.repository.CommentRepository;
 import pl.sda.spring_start.repository.PostRepository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +91,20 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    public void addPost(String title, String content, Category category, User author) {
+    // obsługa plików zdjęciowych
+    private final String UPLOAD_DIR = "./upload/";
+
+    public void addPost(String title, String content, Category category, User author, MultipartFile imagePath) {
+        // znormalizowana ścieżka do pliku zdjęciowego
+        String fileName = StringUtils.cleanPath(imagePath.getOriginalFilename());
+        System.out.println("Image path: " + fileName);
+        // zapis pliku zdjęciowego
+        try {
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.copy(imagePath.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         postRepository.save(new Post(title, content, LocalDateTime.now(), category, author));
     }
 

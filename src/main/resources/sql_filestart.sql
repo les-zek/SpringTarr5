@@ -44,3 +44,5 @@ select post_id,count(*) from likes group by post_id order by 2 desc;
 select post_id,count(*) from dislikes group by post_id order by 2 desc;
 
 select * from comment;
+select * from post;
+alter table post drop column image_path;
