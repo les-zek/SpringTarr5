@@ -35,12 +35,12 @@ public class BlogRESTController {
         userService.registerUser(user);
     }
 
-    @PutMapping("/user/registerConfirm")
-    public void registerConfirm(
-            @RequestParam("userId") int userId
-    ) {
-        userService.activateUser(userId);
-    }
+//    @PutMapping("/user/registerConfirm")
+//    public void registerConfirm(
+//            @RequestParam("userId") int userId
+//    ) {
+//        userService.activateUser(userId);
+//    }
 
     @DeleteMapping("/user/delete")
     public void deleteUserById(

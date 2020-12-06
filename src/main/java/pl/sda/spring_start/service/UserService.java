@@ -25,11 +25,11 @@ public class UserService {
     @Autowired
     EncoderAlgorithm encoderAlgorithm;
 
-    public UserDetails getCredentials(Authentication auth) {
+    public UserDetails getCredentials(Authentication auth){
         return auth != null ? (UserDetails) auth.getPrincipal() : null;
     }
 
-    public void registerUser(User user) {
+    public void registerUser(User user){
         // domyślną rolą po rejestracji jest USER -> id = 1
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.getOne(1));
@@ -37,29 +37,37 @@ public class UserService {
         user.setPassword(encoderAlgorithm.getPasswordEncoder().encode(user.getPassword())); // szyfrowanie hasła
         userRepository.save(user);          // INSERT INTO user values (?,?,?,?)
     }
-
-    public void activateUser(int userId) {   // UPDATE user SET status = 1 WHERE user_id = ?;
+    public void changeUserStatus(int userId){   // UPDATE user SET status = 1 WHERE user_id = ?;
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
+        if(userOptional.isPresent()){
             User user = userOptional.get();
-            user.setStatus(true);
+            user.setStatus(!user.isStatus());
             userRepository.save(user);      // save gdy jest wywoływana na istniejącym w db obiekcie to działa jak update
         }
     }
+    public void addAdmin(int userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Role> roleOptional = roleRepository.findById(2);
+        if(userOptional.isPresent() && roleOptional.isPresent()){
+            User user = userOptional.get();
+            Role role = roleOptional.get();
+            Set<Role> currentRoles = user.getRoles();
+            currentRoles.add(role);
+            user.setRoles(currentRoles);
+            userRepository.save(user);
+        }
+    }
 
-    public void deleteUser(int userId) {
+    public void deleteUser(int userId){
         userRepository.deleteById(userId);
     }
-
-    public List<User> getAllUsersOrderByRegistrationDateTimeDesc() {
+    public List<User> getAllUsersOrderByRegistrationDateTimeDesc(){
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "registrationDateTime"));
     }
-
-    public Optional<User> getUserByEmail(String email) {
+    public Optional<User> getUserByEmail(String email){
         return userRepository.findFirstByEmail(email);
     }
-
-    public Optional<User> getUserById(int userId) {
+    public Optional<User> getUserById(int userId){
         return userRepository.findById(userId);
     }
 }
