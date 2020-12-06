@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/addLike&**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers("/addDislike&**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers("/comments&**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+                .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
 
                 .anyRequest().permitAll()   // każde inne żądanie nie uwierzytelniaj
                 .and()

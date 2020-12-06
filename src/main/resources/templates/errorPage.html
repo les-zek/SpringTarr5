@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th=”http://www.thymeleaf.org”>
+
+<!--znajduje się w fragments/head.html -> znacznik head-->
+<head th:replace="fragments/head.html :: head"></head>
+
+<body>
+<!--navigation-->
+<nav th:replace="fragments/navigation.html :: nav"></nav>
+
+<!-- Page Header -->
+<header th:replace="fragments/header.html :: header(title='Leszek\'s Blog', subtitle='Wrong request !!!')"></header>
+
+<!-- Main Content -->
+
+
+<!-- Footer -->
+<footer th:replace="fragments/footer.html :: footer"></footer>
+
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

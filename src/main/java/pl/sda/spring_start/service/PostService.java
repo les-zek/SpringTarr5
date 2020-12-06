@@ -15,10 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -27,26 +24,28 @@ public class PostService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public void addCommentToPostByUser(CommentDto commentDto, Post post, User user){
+    public void addCommentToPostByUser(CommentDto commentDto, Post post, User user) {
         commentRepository.save(new Comment(commentDto.getMessage(), user, post));
     }
-    public List<Comment> getAllCommentsForPostOrderByDateAddedDesc(Post post){
+
+    public List<Comment> getAllCommentsForPostOrderByDateAddedDesc(Post post) {
         return commentRepository.findAllByRootPost(post, Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
-    public void deleteCommentById(int commentId){       // przekazywane z a href
+
+    public void deleteCommentById(int commentId) {       // przekazywane z a href
         commentRepository.deleteById(commentId);
     }
 
-    public boolean addDislike(int postId, User hater){
+    public boolean addDislike(int postId, User hater) {
         Optional<Post> postToDislikeOptional = getPostById(postId);
-        if(postToDislikeOptional.isPresent()){                     // sprawdzam czy post istnieje
+        if (postToDislikeOptional.isPresent()) {                     // sprawdzam czy post istnieje
             Post postToDislike = postToDislikeOptional.get();
             // gdy jestem autorem lub już likeowałem tego posta to nie nie mogę hejtować
-            if(postToDislike.getAuthor().equals(hater) || postToDislike.getLikes().contains(hater)){
+            if (postToDislike.getAuthor().equals(hater) || postToDislike.getLikes().contains(hater)) {
                 return false;
             }
             Set<User> currentDislikes = postToDislike.getDislikes();     // pobieram aktualne dislike-i
-            if(!currentDislikes.add(hater)) {                             // gdy dodawanie zwraca true tzn, że nie byłem hejterem
+            if (!currentDislikes.add(hater)) {                             // gdy dodawanie zwraca true tzn, że nie byłem hejterem
                 currentDislikes.remove(hater);                          // aktualizuję zbiór dislike-ów
             }                                                           // gdy byłem hejterem to usuwam dislike ze zbioru
             postToDislike.setDislikes(currentDislikes);
@@ -55,16 +54,17 @@ public class PostService {
         }
         return false;
     }
-    public boolean addLike(int postId, User follower){
+
+    public boolean addLike(int postId, User follower) {
         Optional<Post> postToLikeOptional = getPostById(postId);
-        if(postToLikeOptional.isPresent()){                     // sprawdzam czy post istnieje
+        if (postToLikeOptional.isPresent()) {                     // sprawdzam czy post istnieje
             Post postToLike = postToLikeOptional.get();
             // gdy jestem autorem lub już hejtowałem tego posta to nie nie mogę like-ować
-            if(postToLike.getAuthor().equals(follower) || postToLike.getDislikes().contains(follower)){
+            if (postToLike.getAuthor().equals(follower) || postToLike.getDislikes().contains(follower)) {
                 return false;
             }
             Set<User> currentLikes = postToLike.getLikes();     // pobieram aktualne like-i
-            if(!currentLikes.add(follower)) {                    // dodaje like-a
+            if (!currentLikes.add(follower)) {                    // dodaje like-a
                 currentLikes.remove(follower);
             }
             postToLike.setLikes(currentLikes);
@@ -111,10 +111,11 @@ public class PostService {
     public List<Post> getAllPosts() {
         return postRepository.findAll(Sort.by(Sort.Direction.DESC, "dateAdded"));
     }
-    public List<Integer> generatePagesIndexes(List<Post> posts){
+
+    public List<Integer> generatePagesIndexes(List<Post> posts) {
         int noOfPages = (getAllPosts().size() / 5) + 1;
         List<Integer> pagesIndexes = new ArrayList<>();
-        for (int i = 0; i < noOfPages; i++){
+        for (int i = 0; i < noOfPages; i++) {
             pagesIndexes.add(i + 1);
         }
         return pagesIndexes;
@@ -153,13 +154,16 @@ public class PostService {
         return postRepository.findById(postId);
     }
 
-    public List<Post> getAllPostsOrderByResult(String sortDirection, int pageIndex){
-        Pageable pageable = PageRequest.of(pageIndex, 5);
-        if(sortDirection.equals("ASC")){
-            return postRepository.findAllSortedByResultASC();
-        } else {
-            return postRepository.findAllSortedByResultDESC();
+    public List<Post> getAllPostsOrderByResult(String sortDirection, int pageIndex) {
+        int pageSize = 5;
+        int startItem = pageIndex * pageSize;
+        List<Post> posts = postRepository.findAllSortedByResultDESC();
+        int toIndex = Math.min(startItem + pageSize, posts.size());
+        if (sortDirection.equals("ASC")) {
+            posts = postRepository.findAllSortedByResultASC();   // cała lista postów uporządkowana po OCENACH
+            return posts.subList(startItem, toIndex);            // pobraną stronicę
         }
+        return posts.subList(startItem, toIndex);
     }
 
 }
