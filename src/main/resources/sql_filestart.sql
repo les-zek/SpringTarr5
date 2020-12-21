@@ -47,3 +47,8 @@ select * from comment;
 select * from post;
 alter table post drop column image_path;
 select * from user;
+SELECT u.email, r.role_name FROM user u JOIN user_roles ur ON (u.user_id = ur.user_user_id) JOIN role r ON (r.role_id = ur.roles_role_id);
+create database demo;
+select * from user;
+select * from task where type=1;
+select * from task;
