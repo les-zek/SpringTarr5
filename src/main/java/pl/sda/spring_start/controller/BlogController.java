@@ -1,3 +1,8 @@
+/*
+all the content written during the TARR5 Java Programming Training
+2020 01-12
+ */
+
 package pl.sda.spring_start.controller;
 
 import io.swagger.models.auth.In;
